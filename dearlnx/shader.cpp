@@ -6,12 +6,18 @@
 #include <vector>
 
 // windows ?
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 // OPENGL
 #include <GL/glew.h>
-#include <GL/GL.h>
 
+#ifdef _WIN32
+#include <GL/GL.h>
+#else
+#include <GL/gl.h>
+#endif
 
 // INTERNAL
 #include "shader.hpp"
