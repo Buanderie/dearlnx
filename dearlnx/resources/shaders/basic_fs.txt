@@ -4,6 +4,7 @@ in VS_OUT {
   float time;
 } fs_in;
 
+uniform float polbak;
 out vec4 color;
 
 float dfSphere(vec3 p, float s) {
@@ -30,7 +31,7 @@ void main() {
   vec3 p = vec3(0, 0, -2); // camera position
   vec3 vd = normalize(v0 - p); // ray direction
 
-  vec3 spherePos = vec3(0, 0, 50);
+  vec3 spherePos = vec3(polbak, 0, 50);
   vec3 lightPos = vec3(70 * cos(fs_in.time * 1.7), 70 * sin(fs_in.time * 0.35), 70 * sin(fs_in.time));
 
   // epsilon vectors used for calculating surface normals

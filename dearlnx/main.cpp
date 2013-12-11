@@ -29,6 +29,11 @@ void usage( int argc, char** argv )
 
 }
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+      glViewport(0, 0, width, height);
+}
+
 int main( int argc, char** argv )
 {
 	/*
@@ -144,6 +149,8 @@ int main( int argc, char** argv )
 		cin >> dump;
 		return -1;
 	}
+
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	Shader basic_shader( "resources/shaders/basic_vs.txt", "resources/shaders/basic_fs.txt" );
 

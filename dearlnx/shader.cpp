@@ -90,3 +90,21 @@ void Shader::unbind()
 {
 	glUseProgram(0);
 }
+
+bool Shader::setUniform1f( const std::string& name, float value )
+{
+  bool ret = false;
+  glUseProgram(prog);
+  if( _uniforms.find( name ) == _uniforms.end() )
+  {
+    GLint uniret = glGetUniformLocation( prog, name.c_str() );
+    if( uniret >= 0 )
+      ret = true;
+  }
+  else
+  {
+    ret = true;
+    glUniform1f ( _uniforms[name], value );
+  }
+  return ret;
+}

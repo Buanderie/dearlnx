@@ -81,3 +81,18 @@ FrameBuffer::FrameBuffer( int nbTextures, int width, int height )
 {
 	init( nbTextures, width, height );
 }
+
+void FrameBuffer::destroy()
+{
+  //glDeleteFrameBuffers( 1, &_id );
+  for( int i = 0; i < _nbTex+1; ++i)
+  {
+    delete _textures[i];
+  }
+}
+
+void FrameBuffer::resize( int width, int height )
+{
+  destroy();
+  init( _nbTex, width, height );
+}

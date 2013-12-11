@@ -3,6 +3,7 @@
 
 // STL
 #include <string>
+#include <map>
 
 class Shader
 {
@@ -13,11 +14,15 @@ public:
 	void bind();
 	void unbind();
 
+  bool setUniform1f( const std::string& name, float value );  
+  
 private:
 	GLuint vertex_shader;
 	GLuint fragment_shader;
 	GLuint prog;
 	
+  std::map< std::string, GLuint > _uniforms;
+
 	GLint compileShaderFromSource( GLuint shader_id, const std::string& shaderSourceFile );
 
 protected:
