@@ -162,6 +162,11 @@ int main( int argc, char** argv )
 		double then = glfwGetTime();	
 		
 		//fbo.bind();
+    int w, h;
+    glfwGetWindowSize( window, &w, &h );
+    basic_shader.setUniform1f( "polbak", then );
+    basic_shader.setUniform1f( "resx", w );
+    basic_shader.setUniform1f( "resy", h );
 		basic_shader.bind();
 		
 		quad.draw();

@@ -1,7 +1,7 @@
 #version 330 core
 
 layout(location = 0) in vec3 pos;
-uniform float time = 0;
+uniform float polbak;
 
 out VS_OUT {
   float time;
@@ -10,5 +10,5 @@ out VS_OUT {
 void main() {
   gl_Position.xyz = pos;
   gl_Position.w = 1.0;
-  vs_out.time = time;
+  vs_out.time = polbak;
 }

@@ -98,13 +98,20 @@ bool Shader::setUniform1f( const std::string& name, float value )
   if( _uniforms.find( name ) == _uniforms.end() )
   {
     GLint uniret = glGetUniformLocation( prog, name.c_str() );
+
     if( uniret >= 0 )
+    {
+      _uniforms.insert( make_pair( name, uniret ) );
       ret = true;
+    }
+    else
+      return false;
   }
   else
   {
     ret = true;
-    glUniform1f ( _uniforms[name], value );
   }
+
+  glUniform1f ( _uniforms[name], value );
   return ret;
 }
