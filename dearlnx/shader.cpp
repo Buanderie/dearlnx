@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 // windows ?
 #ifdef _WIN32
@@ -98,7 +99,6 @@ bool Shader::setUniform1f( const std::string& name, float value )
   if( _uniforms.find( name ) == _uniforms.end() )
   {
     GLint uniret = glGetUniformLocation( prog, name.c_str() );
-
     if( uniret >= 0 )
     {
       _uniforms.insert( make_pair( name, uniret ) );
@@ -114,4 +114,31 @@ bool Shader::setUniform1f( const std::string& name, float value )
 
   glUniform1f ( _uniforms[name], value );
   return ret;
+}
+
+bool Shader::setTextureSampler( const int samplerId, const Texture2D& texture )
+{
+  bool ret = false;
+  glUseProgram(prog);
+  stringstream sstr;  
+  sstr << "sampler" << samplerId;
+  string name = sstr.str();
+  if( _uniforms.find( name ) == _uniforms.end() )
+  {
+    GLint uniret = glGetUniformLocation( prog, name.c_str() );
+    if( uniret >= 0 )
+    {
+      _uniforms.insert( make_pair( name, uniret ) );
+      ret = true;
+    }
+    else
+      return false;
+  }
+  else
+  {
+    ret = true;
+  } 
+  glUniform1i( _uniforms[name], samplerId );
+  glActiveTexture(GL_TEXTURE0 + samplerId);
+  glBindTexture(GL_TEXTURE_2D, texture.id()); 
 }

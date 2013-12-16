@@ -167,14 +167,23 @@ int main( int argc, char** argv )
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
+    basic_shader.setTextureSampler( 0, fbo.getTexture(0) );
 		basic_shader.bind();
-		
 		quad.draw();
-
 		basic_shader.unbind();
-		
 		//fbo.unbind();
 
+    /*
+    int w, h;
+    glfwGetWindowSize( window, &w, &h );
+    basic_shader.setUniform1f( "polbak", then );
+    basic_shader.setUniform1f( "resx", w );
+    basic_shader.setUniform1f( "resy", h );
+    basic_shader.setTextureSampler( 0, fbo.getTexture(0) );
+    basic_shader.bind();
+    quad.draw();
+    basic_shader.unbind();
+    */
         glfwSwapBuffers(window);
        
         glfwPollEvents();

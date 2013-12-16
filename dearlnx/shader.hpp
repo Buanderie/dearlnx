@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 
+// INTERNAL
+#include "texture.h"
+
 class Shader
 {
 public:
@@ -15,6 +18,7 @@ public:
 	void unbind();
 
   bool setUniform1f( const std::string& name, float value );  
+  bool setTextureSampler( const int samplerId, const Texture2D& texture );
   
 private:
 	GLuint vertex_shader;
