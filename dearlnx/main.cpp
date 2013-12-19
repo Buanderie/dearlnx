@@ -29,8 +29,11 @@ void usage( int argc, char** argv )
 
 }
 
+FrameBuffer* fbo;
+	
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+			fbo->resize( width, height );
       glViewport(0, 0, width, height);
 }
 
@@ -125,11 +128,13 @@ int main( int argc, char** argv )
 	*/
 	
 
-	GLFWwindow* window;
-	
+	GLFWwindow* window;	
+
+
     if (!glfwInit())
         return -1;
 	
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor	();
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
     {
@@ -137,7 +142,7 @@ int main( int argc, char** argv )
         return -1;
     }
 
-    glfwMakeContextCurrent(window);
+  glfwMakeContextCurrent(window);
 
 	glewExperimental=TRUE;
 	GLenum err=glewInit();
@@ -152,38 +157,39 @@ int main( int argc, char** argv )
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	fbo = new FrameBuffer( 1, 640, 480 );
 	Shader basic_shader( "resources/shaders/basic_vs.txt", "resources/shaders/basic_fs.txt" );
 
-	FrameBuffer fbo(1, 800, 600);
+	int w, h;
+    glfwGetWindowSize( window, &w, &h );
+
+	Texture2D ttt( "resources/ananas.jpg" );
+	
 	QuadRenderer quad;
 
     while (!glfwWindowShouldClose(window))
     {
 		double then = glfwGetTime();	
 		
-		//fbo.bind();
-    int w, h;
-    glfwGetWindowSize( window, &w, &h );
+		fbo->bind();
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
-    basic_shader.setTextureSampler( 0, fbo.getTexture(0) );
+    basic_shader.setTextureSampler( 0, ttt );
 		basic_shader.bind();
 		quad.draw();
 		basic_shader.unbind();
-		//fbo.unbind();
+		fbo->unbind();
 
-    /*
-    int w, h;
     glfwGetWindowSize( window, &w, &h );
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
-    basic_shader.setTextureSampler( 0, fbo.getTexture(0) );
+    basic_shader.setTextureSampler( 0, fbo->getTexture(0) );
     basic_shader.bind();
     quad.draw();
     basic_shader.unbind();
-    */
+    
         glfwSwapBuffers(window);
        
         glfwPollEvents();

@@ -4,6 +4,8 @@
 
 #include <GL/glew.h>
 
+#include <SOIL/SOIL.h>
+
 template< GLuint T >
 class Texture {
 public:
@@ -12,6 +14,11 @@ public:
     Texture()
     {
         glGenTextures(1, &_id);
+    }
+    
+    Texture( const std::string& filePath )
+    {
+    	_id = SOIL_load_OGL_texture( filePath.c_str(), 4, 0, SOIL_FLAG_TEXTURE_REPEATS );
     }
 
     GLuint id() const
@@ -24,6 +31,11 @@ public:
         glBindTexture(TextureType, _id);
     }
 
+		void save( const std::string& filePath )
+		{
+			
+		}
+		
     void regenerate()
     {
         glDeleteTextures(1,&_id);
@@ -39,6 +51,8 @@ public:
     {
         glDeleteTextures(1, &_id);
     }
+    
+    
     
 private:
     GLuint _id;

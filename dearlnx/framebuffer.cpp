@@ -2,6 +2,9 @@
 // STL
 #include <iostream>
 
+// GLEW
+#include <GL/glew.h>
+
 // INTERNAL
 #include "framebuffer.h"
 #include "utils.hpp"
@@ -84,7 +87,7 @@ FrameBuffer::FrameBuffer( int nbTextures, int width, int height )
 
 void FrameBuffer::destroy()
 {
-  //glDeleteFrameBuffers( 1, &_id );
+  glDeleteFramebuffers( 1, &_id );
   for( int i = 0; i < _nbTex+1; ++i)
   {
     delete _textures[i];
