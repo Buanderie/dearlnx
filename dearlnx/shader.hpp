@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 
+// GLM
+#include <glm/glm.hpp>
+
 // INTERNAL
 #include "texture.h"
 
@@ -18,6 +21,8 @@ public:
 	void unbind();
 
   bool setUniform1f( const std::string& name, float value );  
+  bool setUniformVec3( const std::string& name, glm::vec3 value );
+  bool setUniformMat4( const std::string& name, glm::mat4 value );
   bool setTextureSampler( const int samplerId, const Texture2D& texture );
   
 private:

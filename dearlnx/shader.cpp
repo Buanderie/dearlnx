@@ -14,6 +14,9 @@
 // OPENGL
 #include <GL/glew.h>
 
+// GLM
+#include <glm/glm.hpp>
+
 #ifdef _WIN32
 #include <GL/GL.h>
 #else
@@ -113,6 +116,55 @@ bool Shader::setUniform1f( const std::string& name, float value )
   }
 
   glUniform1f ( _uniforms[name], value );
+  return ret;
+}
+
+bool Shader::setUniformVec3( const std::string& name, glm::vec3 value )
+{
+  bool ret = false;
+  glUseProgram(prog);
+  if( _uniforms.find( name ) == _uniforms.end() )
+  {
+    GLint uniret = glGetUniformLocation( prog, name.c_str() );
+    if( uniret >= 0 )
+    {
+      _uniforms.insert( make_pair( name, uniret ) );
+      ret = true;
+    }
+    else
+      return false;
+  }
+  else
+  {
+    ret = true;
+  }
+
+  glUniform3f ( _uniforms[name], value.x, value.y, value.z );
+  return ret;
+}
+
+bool Shader::setUniformMat4( const std::string& name, glm::mat4 value )
+{
+  bool ret = false;
+  glUseProgram(prog);
+  if( _uniforms.find( name ) == _uniforms.end() )
+  {
+    GLint uniret = glGetUniformLocation( prog, name.c_str() );
+    if( uniret >= 0 )
+    {
+      _uniforms.insert( make_pair( name, uniret ) );
+      ret = true;
+    }
+    else
+      return false;
+  }
+  else
+  {
+    ret = true;
+  }
+
+  glUniformMatrix4fv ( _uniforms[name], 1, GL_FALSE, &value[0][0] );
+
   return ret;
 }
 

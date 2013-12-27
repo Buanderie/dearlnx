@@ -44,7 +44,7 @@ public:
 
 		// Random glitching
         int headerSize = getJpegHeaderSize( (const unsigned char*)_jpegBuffer, _width*_height*3 );
-        glitchJpegBytes( (unsigned char*)_jpegBuffer, _width*_height*3, headerSize, 256.0, 10+rand()%40 );
+        glitchJpegBytes( (unsigned char*)_jpegBuffer, _width*_height*3, headerSize, 256.0, 50+rand()%100 );
 
 		// decoding
 		_jpegDecompressor = tjInitDecompress();

@@ -17,6 +17,7 @@
 #include "framebuffer.h"
 #include "quadrenderer.h"
 #include "shader.hpp"
+#include "camera.hpp"
 
 // LOL
 #include <GLFW/glfw3.h>
@@ -30,16 +31,44 @@ void usage( int argc, char** argv )
 }
 
 FrameBuffer* fbo;
-	
+Camera* cam;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-			fbo->resize( width, height );
+			//fbo->resize( width, height );
       glViewport(0, 0, width, height);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT)
+        cam->rotateYaw(1.0f);
+        
+        if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT)
+        cam->rotateYaw(-1.0f);
+        
+        if (key == GLFW_KEY_UP && action == GLFW_REPEAT)
+        cam->rotatePitch(0.1f);
+        
+        if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT)
+        cam->rotatePitch(-1.0f);
+        
+        if (key == GLFW_KEY_Z && action == GLFW_REPEAT)
+        cam->forward(-0.1f);
+        
+        if (key == GLFW_KEY_Q && action == GLFW_REPEAT)
+        cam->forward(0.1f);
+        
+        if (key == GLFW_KEY_S && action == GLFW_REPEAT)
+        cam->strafe(-0.1f);
+        
+        if (key == GLFW_KEY_D && action == GLFW_REPEAT)
+        cam->strafe(0.1f);
 }
 
 int main( int argc, char** argv )
 {
-	/*
+	/***************
 	bool quitApp = false;
 	bool pauseApp = false;
 	
@@ -49,7 +78,7 @@ int main( int argc, char** argv )
 	while(1)
 	{
 		if( !pauseApp )
-			frame = cvLoadImage( "C:\\dede.jpg" );
+			frame = cvLoadImage( argv[1] );
 
 		if( frame == NULL || quitApp )
 			break;
@@ -62,9 +91,9 @@ int main( int argc, char** argv )
 
 		IplImage* threshImg = cvCreateImage( cvGetSize( polImg ), 8, 1 );
 		
-		sf::Clock clock;
+		//sf::Clock clock;
 		cvCvtColor( polImg, threshImg, CV_RGB2GRAY );
-		cvThreshold( threshImg, threshImg, 25, 255, CV_THRESH_BINARY | CV_THRESH_OTSU );
+		cvThreshold( threshImg, threshImg, 25, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU );
 
 		QuadTree q( cvRect( 0, 0, twidth, theight ) );
 		q.subdivide( 4 );
@@ -102,7 +131,7 @@ int main( int argc, char** argv )
 		}
 		
 		cvShowImage( "dearlnx", polImg );
-		//cvShowImage( "bak", threshImg );
+		cvShowImage( "bak", threshImg );
 
 		char c = cvWaitKey( 5 );
 		switch( c )
@@ -117,17 +146,20 @@ int main( int argc, char** argv )
 			default:
 				break;
 		}
-		double elapsed = clock.getElapsedTime().asSeconds();
-		cout << "elapsed=" << elapsed << " - fps=" << 1.0 / elapsed << endl;
+		//double elapsed = clock.getElapsedTime().asSeconds();
+		//cout << "elapsed=" << elapsed << " - fps=" << 1.0 / elapsed << endl;
 
 		//cvReleaseBlobs(blobs);
 		cvReleaseImage( &polImg );
 		cvReleaseImage( &frame );
 		cvReleaseImage( &threshImg );
 	}
-	*/
 	
+	*/
 
+	cam = new Camera();
+
+	
 	GLFWwindow* window;	
 
 
@@ -156,21 +188,35 @@ int main( int argc, char** argv )
 	}
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	fbo = new FrameBuffer( 1, 640, 480 );
+	 glfwSetKeyCallback(window, key_callback);
+	//fbo = new FrameBuffer( 1, 640, 480 );
 	Shader basic_shader( "resources/shaders/basic_vs.txt", "resources/shaders/basic_fs.txt" );
 
 	int w, h;
-    glfwGetWindowSize( window, &w, &h );
+	double curx, cury, lastcurx, lastcury;
+  glfwGetWindowSize( window, &w, &h );
 
 	Texture2D ttt( "resources/ananas.jpg" );
 	
 	QuadRenderer quad;
-
+	double frameTime = 0.0f;
+	
     while (!glfwWindowShouldClose(window))
     {
-		double then = glfwGetTime();	
+    
+    	//cam.forward(frameTime * 0.05f);
+    	
+    	
+	glm::vec3 pos = cam->getPosition();
+	//cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
+	
+		float deltax = lastcurx - curx;
 		
+		glfwGetCursorPos( window, &curx, &cury );
+		//cam.rotateYaw( 50 * frameTime);
+		//cam.rotatePitch( 5.0 * frameTime);
+		double then = glfwGetTime();	
+		/*
 		fbo->bind();
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
@@ -179,13 +225,20 @@ int main( int argc, char** argv )
 		basic_shader.bind();
 		quad.draw();
 		basic_shader.unbind();
+		IplImage* pompom = cvCreateImage( cvSize( w, h ), 8, 4 );
+		glReadPixels( 0, 0, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pompom->imageData );
+		cvSaveImage("lolpute.png", pompom );
+		cvReleaseImage( &pompom );
 		fbo->unbind();
-
+		*/
+		
     glfwGetWindowSize( window, &w, &h );
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
-    basic_shader.setTextureSampler( 0, fbo->getTexture(0) );
+    basic_shader.setUniformVec3( "campos", cam->getPosition() );
+    basic_shader.setUniformMat4( "camrot", cam->getOrientationMatrix() );
+    //basic_shader.setTextureSampler( 0, fbo->getTexture(0) );
     basic_shader.bind();
     quad.draw();
     basic_shader.unbind();
@@ -196,7 +249,8 @@ int main( int argc, char** argv )
 
 		double now = glfwGetTime();
 		double elapsed = now - then;
-		cout << "t=" << elapsed << " - fps=" << 1.0/elapsed << endl;
+		frameTime = elapsed;
+		//cout << "t=" << elapsed << " - fps=" << 1.0/elapsed << endl;
     }
 
     glfwTerminate();

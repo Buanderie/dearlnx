@@ -11,6 +11,8 @@ file (GLOB SRC_CPP ${DEARLNX_SOURCE_DIR}/*.cpp)
 add_executable(dearlnx ${SRC_CPP})
 
 # find shit
+find_package(GLM REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLFW REQUIRED libglfw)
@@ -21,13 +23,17 @@ include_directories( ${OPENGL_INCLUDE_DIRS} )
 include_directories( ${GLFW_INCLUDE_DIRS} )
 include_directories( ${GLEW_INCLUDE_DIRS} )
 include_directories( ${SOIL_INCLUDE_DIRS} )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
 include_directories( /opt/libjpeg-turbo/include )
 
 #link shit
+#LINK_DIRECTORIES( ${LINK_DIRECTORIES} /opt/libjpeg-turbo/ )
 target_link_libraries(dearlnx ${OPENGL_LIBRARIES} )
 target_link_libraries(dearlnx ${GLFW_LIBRARIES} )
 target_link_libraries(dearlnx ${GLEW_LIBRARIES} )
 target_link_libraries(dearlnx ${SOIL_LIBRARIES} )
+target_link_libraries(dearlnx ${OpenCV_LIBRARIES} )
+target_link_libraries(dearlnx /opt/libjpeg-turbo/lib32/libturbojpeg.so )
 
 # Copy resources to build directory
 file(COPY ${DEARLNX_SOURCE_DIR}/resources DESTINATION ${DEARLNX_BINARY_DIR} )
