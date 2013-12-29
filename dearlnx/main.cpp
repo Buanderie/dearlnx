@@ -48,22 +48,22 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         cam->rotateYaw(-1.0f);
         
         if (key == GLFW_KEY_UP && action == GLFW_REPEAT)
-        cam->rotatePitch(0.1f);
+        cam->rotatePitch(1.0f);
         
         if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT)
         cam->rotatePitch(-1.0f);
         
-        if (key == GLFW_KEY_Z && action == GLFW_REPEAT)
-        cam->forward(-0.1f);
-        
-        if (key == GLFW_KEY_Q && action == GLFW_REPEAT)
-        cam->forward(0.1f);
+        if (key == GLFW_KEY_W && action == GLFW_REPEAT)
+        cam->forward(1.0f);
         
         if (key == GLFW_KEY_S && action == GLFW_REPEAT)
-        cam->strafe(-0.1f);
+        cam->forward(-1.0f);
+        
+        if (key == GLFW_KEY_A && action == GLFW_REPEAT)
+        cam->strafe(-1.0f);
         
         if (key == GLFW_KEY_D && action == GLFW_REPEAT)
-        cam->strafe(0.1f);
+        cam->strafe(1.0f);
 }
 
 int main( int argc, char** argv )
@@ -150,7 +150,7 @@ int main( int argc, char** argv )
 		//cout << "elapsed=" << elapsed << " - fps=" << 1.0 / elapsed << endl;
 
 		//cvReleaseBlobs(blobs);
-		cvReleaseImage( &polImg );
+		cvReleaseImage( &polImg );g_theta += dx * 0.01f;
 		cvReleaseImage( &frame );
 		cvReleaseImage( &threshImg );
 	}
@@ -167,7 +167,7 @@ int main( int argc, char** argv )
         return -1;
 	
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor	();
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Hello World", monitor, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -205,14 +205,22 @@ int main( int argc, char** argv )
     {
     
     	//cam.forward(frameTime * 0.05f);
-    	
-    	
-	glm::vec3 pos = cam->getPosition();
-	//cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
+    	glfwGetWindowSize( window, &w, &h );
+    	double mposX, mposY;
+			glfwGetCursorPos(window, &mposX, &mposY);
+			glfwSetCursorPos(window, (double)(w / 2), (double)(h / 2));
+			double dx = mposX - w / 2;
+			double dy = mposY - h / 2;
+			cam->rotateYaw( dx * 0.01 );
+			cam->rotatePitch( -dy * 0.01 );
+			
+			cout << "dx=" << dx << " - dy=" << dy << endl;
+	
+			glm::vec3 pos = cam->getPosition();
+			//cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
 	
 		float deltax = lastcurx - curx;
 		
-		glfwGetCursorPos( window, &curx, &cury );
 		//cam.rotateYaw( 50 * frameTime);
 		//cam.rotatePitch( 5.0 * frameTime);
 		double then = glfwGetTime();	
@@ -232,12 +240,15 @@ int main( int argc, char** argv )
 		fbo->unbind();
 		*/
 		
-    glfwGetWindowSize( window, &w, &h );
+    
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
     basic_shader.setUniformVec3( "campos", cam->getPosition() );
     basic_shader.setUniformMat4( "camrot", cam->getOrientationMatrix() );
+    basic_shader.setUniformVec3( "camheading", cam->getViewVector() );
+    basic_shader.setUniformVec3( "camup", cam->getUpVector() );
+    basic_shader.setUniformVec3( "camright", cam->getRightVector() );
     //basic_shader.setTextureSampler( 0, fbo->getTexture(0) );
     basic_shader.bind();
     quad.draw();

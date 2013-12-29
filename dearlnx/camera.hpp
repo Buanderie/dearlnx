@@ -13,6 +13,9 @@ class Camera
 
 		glm::mat4 getOrientationMatrix();
 		glm::vec3 getPosition();
+		glm::vec3 getViewVector();
+		glm::vec3 getUpVector();
+		glm::vec3 getRightVector();
 		
 		void forward( float speed );
 		void strafe( float speed );

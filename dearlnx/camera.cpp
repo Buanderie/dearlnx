@@ -16,7 +16,7 @@ Camera::Camera()
 	_pitchAngle = 0.0f;
 	_yawAngle = 0.0f;
 	_rollAngle = 0.0f;
-	_pos = glm::vec3( 0, 0, -2 ); 
+	_pos = glm::vec3( 0, 0, -10 ); 
 }
 
 Camera::~Camera()
@@ -27,12 +27,12 @@ Camera::~Camera()
 glm::mat4 Camera::getOrientationMatrix()
 {
 	glm::quat finalRot;
-	_pitchQuat = glm::quat( glm::radians(_pitchAngle), 1.0f, 0.0f, 0.0f );
-	_yawQuat = glm::quat( glm::radians(_yawAngle), 0.0f, 1.0f, 0.0 );
-	_rollQuat = glm::quat( glm::radians(_rollAngle), 0.0f, 0.0f, 1.0f );
+	_pitchQuat = glm::angleAxis( (_pitchAngle), 1.0f, 0.0f, 0.0f );
+	_yawQuat = glm::angleAxis( (_yawAngle), 0.0f, 1.0f, 0.0f );
+	_rollQuat = glm::angleAxis( (_rollAngle), 0.0f, 0.0f, 1.0f );
 	
-	finalRot = _pitchQuat * _yawQuat * _rollQuat;
-	
+	finalRot = _yawQuat * _pitchQuat * _rollQuat;
+	glm::normalize( finalRot );
 	return glm::toMat4(finalRot);
 }
 
@@ -117,3 +117,22 @@ void Camera::rotateRoll( float speed )
 	_rollAngle += speed;
 }
 
+glm::vec3 Camera::getViewVector()
+{
+	return getForwardDirection();
+}
+
+glm::vec3 Camera::getUpVector()
+{
+	glm::vec3 res;
+	glm::mat4 rotm = getOrientationMatrix();
+	res[0] = rotm[1][0];
+	res[1] = rotm[1][1];
+	res[2] = rotm[1][2];
+	return res;
+}
+
+glm::vec3 Camera::getRightVector()
+{
+	return getStrafeDirection();
+}
