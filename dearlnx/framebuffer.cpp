@@ -28,6 +28,9 @@ GLenum getGLColorAttachement( int i )
 
 void FrameBuffer::init( int nbTextures, int width, int height)
 {
+    _width = width;
+    _height = height;
+    
     cout << "FrameBuffer::init("<< nbTextures <<", "<< width << ", "<< height <<")"<< endl;
 
     _nbTex = nbTextures;

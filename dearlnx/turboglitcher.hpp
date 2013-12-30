@@ -39,12 +39,12 @@ public:
 
 		// encoding
 		tjCompress2(_jpegCompressor, input_img, _width, 0, _height, TJPF_RGB,
-          &_jpegBuffer, &_jpegSize, TJSAMP_444, 50,
+          &_jpegBuffer, &_jpegSize, TJSAMP_444, 80,
           TJFLAG_FASTDCT);
 
 		// Random glitching
         int headerSize = getJpegHeaderSize( (const unsigned char*)_jpegBuffer, _width*_height*3 );
-        glitchJpegBytes( (unsigned char*)_jpegBuffer, _width*_height*3, headerSize, 256.0, 50+rand()%100 );
+        glitchJpegBytes( (unsigned char*)_jpegBuffer, _width*_height*3, headerSize, 256.0, 100+rand()%100 );
 
 		// decoding
 		_jpegDecompressor = tjInitDecompress();

@@ -47,6 +47,11 @@ public:
         glBindTexture(TextureType, 0);
     }
 
+    void downloadData( void* ptr, int w, int h )
+    {
+      glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, ptr);
+    }
+    
     ~Texture()
     {
         glDeleteTextures(1, &_id);

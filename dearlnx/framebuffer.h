@@ -35,6 +35,9 @@ public:
 
   void resize( int width, int height );
 
+  int getWidth(){ return _width; }
+  int getHeight(){ return _height; }
+  
 private:
 	// Our FBO id
 	GLuint _id;
@@ -42,6 +45,9 @@ private:
 	// A collection of textures
 	std::vector< Texture2D* > _textures;
 	int _nbTex;
+	
+	int _width;
+	int _height;
 
 	// Private methods
 	void init( int nbTextures, int width, int height );
