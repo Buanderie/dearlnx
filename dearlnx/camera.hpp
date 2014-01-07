@@ -11,11 +11,14 @@ class Camera
     Camera();
     virtual ~Camera();
 
+		void update();
 		glm::mat4 getOrientationMatrix();
 		glm::vec3 getPosition();
 		glm::vec3 getViewVector();
 		glm::vec3 getUpVector();
 		glm::vec3 getRightVector();
+		
+		void setPosition( glm::vec3 pos ){ _pos = pos; }
 		
 		void forward( float speed );
 		void strafe( float speed );
@@ -23,9 +26,12 @@ class Camera
 		void rotateYaw( float speed );
 		void rotateRoll( float speed );
 		
+		void lookAt( glm::vec3 target );
+		
   private:
   
 		glm::vec3 _pos;
+		glm::quat _rot;
 		
 		float _pitchAngle;
 		float _yawAngle;

@@ -13,8 +13,7 @@
 
 
 // Internal
-#include "turboglitcher.hpp"
-#include "quadtree.hpp"
+#include "textureglitcher.hpp"
 #include "texture.h"
 #include "framebuffer.h"
 #include "quadrenderer.h"
@@ -33,11 +32,13 @@ void usage( int argc, char** argv )
 }
 
 FrameBuffer* fbo;
+TextureGlitcher* tg;
 Camera* cam;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 			fbo->resize( width, height );
+			tg->resize( width, height );
       glViewport(0, 0, width, height);
 }
 
@@ -200,6 +201,7 @@ int main( int argc, char** argv )
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, key_callback);
 	fbo = new FrameBuffer( 1, 800, 600 );
+	tg = new TextureGlitcher( 800, 600 );
 	Shader basic_shader( "resources/shaders/basic_vs.txt", "resources/shaders/basic_fs.txt" );
 
 	int w, h;
@@ -209,6 +211,7 @@ int main( int argc, char** argv )
 	//Texture2D ttt( "resources/ananas.jpg" );
 	
 	QuadRenderer quad;
+	
 	double frameTime = 0.0f;
 	
     while (!glfwWindowShouldClose(window))
@@ -226,14 +229,19 @@ int main( int argc, char** argv )
 			
 			cout << "dx=" << dx << " - dy=" << dy << endl;
 	
-			glm::vec3 pos = cam->getPosition();
-			//cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
-	
 		float deltax = lastcurx - curx;
 		
 		//cam.rotateYaw( 50 * frameTime);
 		//cam.rotatePitch( 5.0 * frameTime);
 		double then = glfwGetTime();	
+		
+		cam->setPosition( glm::vec3( 50.0 * cos( then ), 10.0 + 100.0 * cos(then), 50.0 * -sin( then ) ) );		 
+		glm::vec3 pos = cam->getPosition();
+		cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
+			
+		//cam->update();
+		cam->lookAt( glm::vec3(0, 10.0, 0) );
+			
     fbo->bind();
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
@@ -247,53 +255,13 @@ int main( int argc, char** argv )
     basic_shader.bind();
     quad.draw();
     basic_shader.unbind();
-    
-    IplImage* polImg = cvCreateImage( cvSize( w, h ), 8, 3 );
-    glBindTexture( GL_TEXTURE_2D, fbo->getTexture(0).id() );
-    glGetTexImage( GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, polImg->imageData );
-    cvFlip( polImg, polImg, 0 );
-    IplImage* threshImg = cvCreateImage( cvGetSize( polImg ), 8, 1 );
-		cvCvtColor( polImg, threshImg, CV_RGB2GRAY );
-		cvThreshold( threshImg, threshImg, 25, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU );
-		QuadTree q( cvRect( 0, 0, fbo->getWidth(), fbo->getHeight() ) );
-		q.subdivide( 4 );
-		q.pruneTree( threshImg, 0.10 );
-		//q.mergeTree( threshImg, 0.05 );
-		int count = 1;
-		while( count != 0 )
-		{
-			count = q.refit();
-		}
-		q.printShit( polImg );
-		std::vector< CvRect > regions = q.retrieveRegions( threshImg );
-		cout << "popo:" << regions.size() << endl;
-		for( int k = 0; k < regions.size(); ++k )
-		{
-			CvRect bbox = regions[ k ];
-			//cvRectangle( polImg, cvPoint( bbox.x, bbox.y ), cvPoint( bbox.x + bbox.width, bbox.y + bbox.height ), CV_RGB(0,255,255), 1 );
-				
-			TurboGlitcher g( bbox.width, bbox.height );
-			
-			IplImage* tn = cvCreateImage( cvSize( bbox.width, bbox.height ), 8, 3 );
-			cvSetImageROI( polImg, bbox );
-			cvCopy( polImg, tn );
-			
-			if( !(bbox.width < 10 || bbox.height < 10) )
-			{
-				g.glitch( tn, tn );
-				cvCopy( tn, polImg );
-			}
-
-			cvResetImageROI( polImg );
-			cvReleaseImage( &tn );
-		}
-		cvShowImage( "dearlnx", polImg );
-		cvWaitKey(5);
-		cvReleaseImage( &polImg );
-		cvReleaseImage( &threshImg );
     fbo->unbind();
-           
+    
+    tg->glitch( fbo->getTexture(0) );
+    
+    fbo->getTexture(0).bind();
     quad.draw();
+    
     
     glfwSwapBuffers(window);
     		

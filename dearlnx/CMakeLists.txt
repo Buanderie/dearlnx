@@ -34,7 +34,12 @@ target_link_libraries(dearlnx ${GLEW_LIBRARIES} )
 target_link_libraries(dearlnx ${SOIL_LIBRARIES} )
 target_link_libraries(dearlnx ${OpenCV_LIBRARIES} )
 target_link_libraries(dearlnx rt )
-target_link_libraries(dearlnx /opt/libjpeg-turbo/lib64/libturbojpeg.so )
+
+if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
+	target_link_libraries(dearlnx /opt/libjpeg-turbo/lib64/libturbojpeg.so )
+elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+	target_link_libraries(dearlnx /opt/libjpeg-turbo/lib32/libturbojpeg.so )
+endif()
 
 # Copy resources to build directory
 file(COPY ${DEARLNX_SOURCE_DIR}/resources DESTINATION ${DEARLNX_BINARY_DIR} )
