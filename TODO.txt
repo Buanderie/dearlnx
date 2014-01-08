@@ -1,0 +1,39 @@
+Messages:
+DEAR
+LNX
+
+ROSES
+ARE
+RED
+VIOLETS
+BLUE
+
+I JUST WANT
+TO MAKE A PROD
+WITH
+YOU
+
+Needed Letters:
+A - OK
+B - ..
+D - OK
+E - OK
+H - ..
+I - ..
+J - ..
+K - ..
+L - ..
+M - .. (invert W)
+N - ..
+O - .. (scale torus ??)
+P - ..
+R - OK
+S - .. (two half torii ?)
+T - ..
+U - ..
+V - .. (part A)
+W - ..
+X - ..
+Y - ..
+
+

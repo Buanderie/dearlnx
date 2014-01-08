@@ -56,7 +56,7 @@ void TextureGlitcher::glitch( Texture2D& tex )
 			cvReleaseImage( &tn );
 		}
 
-		cvSaveImage("polbak.png", _ramBuffer );
+		//cvSaveImage("polbak.png", _ramBuffer );
 		
 		// Copy back to texture !
 		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_BGR, GL_UNSIGNED_BYTE, _ramBuffer->imageData );
