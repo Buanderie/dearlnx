@@ -19,6 +19,7 @@
 #include "quadrenderer.h"
 #include "shader.hpp"
 #include "camera.hpp"
+#include "spline.hpp"
 
 // LOL
 #include <GLFW/glfw3.h>
@@ -31,9 +32,11 @@ void usage( int argc, char** argv )
 
 }
 
+Spline* spline;
 FrameBuffer* fbo;
 TextureGlitcher* tg;
 Camera* cam;
+double frameTime;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -67,6 +70,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         
         if (key == GLFW_KEY_D && action == GLFW_REPEAT)
         cam->strafe(1.0f);
+        
+        if( key == GLFW_KEY_SPACE && action == GLFW_PRESS )
+        {
+        	spline->addKeyPoint( frameTime, cam->getPosition() );
+        	spline->save( "spline.txt" );
+        	
+        }
 }
 
 void error_callback(int error, const char* description)
@@ -77,11 +87,13 @@ void error_callback(int error, const char* description)
 int main( int argc, char** argv )
 {
 
-	const int SCREEN_WIDTH = 1600;
-	const int SCREEN_HEIGHT = 1200;
+	const int SCREEN_WIDTH = 800;
+	const int SCREEN_HEIGHT = 600;
   
 	cam = new Camera();
-
+	
+	spline = new Spline();
+	spline->load( "spline.txt" );
 	
 	GLFWwindow* window;	
 
@@ -126,7 +138,7 @@ int main( int argc, char** argv )
 	
 	QuadRenderer quad;
 	
-	double frameTime = 0.0f;
+
 	
     while (!glfwWindowShouldClose(window))
     {
@@ -148,15 +160,23 @@ int main( int argc, char** argv )
 		//cam.rotateYaw( 50 * frameTime);
 		//cam.rotatePitch( 5.0 * frameTime);
 		double then = glfwGetTime();	
+		frameTime = then;
 		
-		cam->setPosition( glm::vec3( 50.0 * cos( then ), 10.0 + 100.0 * cos(then), 50.0 * -sin( then ) ) );		 
+		//cam->setPosition( glm::vec3( 50.0 * cos( then ), 10.0 + 100.0 * cos(then), 50.0 * -sin( then ) ) );	
+		
+		//
+		cout << "frameTime=" << frameTime << endl;
+		glm::vec3 popopo = spline->getPointFromSync( frameTime );
+		cam->setPosition( popopo );
+		//
+			 
 		glm::vec3 pos = cam->getPosition();
 		cout << pos[0] << " - " << pos[1] << " - " << pos[2] << endl;
 			
-		//cam->update();
+		cam->update();
 		cam->lookAt( glm::vec3(0, 10.0, 0) );
 			
-    fbo->bind();
+    //fbo->bind();
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
@@ -169,12 +189,12 @@ int main( int argc, char** argv )
     basic_shader.bind();
     quad.draw();
     basic_shader.unbind();
-    fbo->unbind();
+    //fbo->unbind();
     
-    tg->glitch( fbo->getTexture(0) );
+    //tg->glitch( fbo->getTexture(0) );
     
-    fbo->getTexture(0).bind();
-    quad.draw();
+    //fbo->getTexture(0).bind();
+    //quad.draw();
     
     
     glfwSwapBuffers(window);
@@ -183,7 +203,6 @@ int main( int argc, char** argv )
 		    
 		double now = glfwGetTime();
 		double elapsed = now - then;
-		frameTime = elapsed;
 		cout << "t=" << elapsed << " - fps=" << 1.0/elapsed << endl;
     }
 

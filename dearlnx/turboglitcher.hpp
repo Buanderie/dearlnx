@@ -79,6 +79,7 @@ private:
 	void deinit()
 	{
 		tjDestroy(_jpegCompressor);
+		tjDestroy(_jpegDecompressor);
 		delete[] _jpegBuffer;
 		delete[] _outputBuffer;
 	}
