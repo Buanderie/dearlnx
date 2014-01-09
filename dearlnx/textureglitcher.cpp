@@ -21,7 +21,7 @@ void TextureGlitcher::glitch( Texture2D& tex )
 {
     glBindTexture( GL_TEXTURE_2D, tex.id() );
     glGetTexImage( GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, _ramBuffer->imageData );
-    cvFlip( _ramBuffer, _ramBuffer, 0 );
+    //cvFlip( _ramBuffer, _ramBuffer, 0 );
 		cvCvtColor( _ramBuffer, _threshBuffer, CV_RGB2GRAY );
 		cvThreshold( _threshBuffer, _threshBuffer, 25, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU );
 		QuadTree q( cvRect( 0, 0, _width, _height ) );

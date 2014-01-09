@@ -1,0 +1,18 @@
+#version 330 core
+
+in VS_OUT {
+  float time;
+} fs_in;
+
+out vec4 color;
+
+uniform sampler2D sampler0;
+uniform float resx;
+uniform float resy;
+
+void main() {
+
+		vec2 qq = gl_FragCoord.xy/vec2(resx,resy);
+    color = texture2D(sampler0, qq );
+		
+}

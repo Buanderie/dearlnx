@@ -37,6 +37,7 @@ FrameBuffer* fbo;
 TextureGlitcher* tg;
 Camera* cam;
 double frameTime;
+int glitchDuration;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -87,8 +88,11 @@ void error_callback(int error, const char* description)
 int main( int argc, char** argv )
 {
 
-	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 600;
+	srand( time(NULL) );
+	glitchDuration = 0;
+	
+	const int SCREEN_WIDTH = 1024;
+	const int SCREEN_HEIGHT = 768;
   
 	cam = new Camera();
 	
@@ -128,8 +132,10 @@ int main( int argc, char** argv )
 	glfwSetKeyCallback(window, key_callback);
 	fbo = new FrameBuffer( 1, SCREEN_WIDTH, SCREEN_HEIGHT );
 	tg = new TextureGlitcher( SCREEN_WIDTH, SCREEN_HEIGHT );
+	
 	Shader basic_shader( "resources/shaders/basic_vs.txt", "resources/shaders/basic_fs.txt" );
-
+	Shader texdraw_shader( "resources/shaders/basic_vs.txt", "resources/shaders/texdraw_fs.txt" );
+	
 	int w, h;
 	double curx, cury, lastcurx, lastcury;
   glfwGetWindowSize( window, &w, &h );
@@ -176,7 +182,7 @@ int main( int argc, char** argv )
 		cam->update();
 		cam->lookAt( glm::vec3(0, 10.0, 0) );
 			
-    //fbo->bind();
+    fbo->bind();
     basic_shader.setUniform1f( "polbak", then );
     basic_shader.setUniform1f( "resx", w );
     basic_shader.setUniform1f( "resy", h );
@@ -189,13 +195,23 @@ int main( int argc, char** argv )
     basic_shader.bind();
     quad.draw();
     basic_shader.unbind();
-    //fbo->unbind();
+    fbo->unbind();
     
-    //tg->glitch( fbo->getTexture(0) );
-    
-    //fbo->getTexture(0).bind();
-    //quad.draw();
-    
+    if( glitchDuration == 0 && (long)(frameTime * 100.0f) % rand()%15 == 0 )
+    	glitchDuration = 15;
+    	
+    if( glitchDuration > 0 )
+    {
+    	tg->glitch( fbo->getTexture(0) );
+    	glitchDuration--;
+    }
+    	
+    texdraw_shader.setUniform1f( "resx", w );
+    texdraw_shader.setUniform1f( "resy", h );
+    texdraw_shader.setTextureSampler( 0, fbo->getTexture(0) );
+    texdraw_shader.bind();
+    quad.draw();
+    texdraw_shader.unbind();
     
     glfwSwapBuffers(window);
     		

@@ -142,11 +142,11 @@ float dist(vec3 rayPos, vec3 objPos) {
   //return drawR( rayPos );
   
   //return sdPlane( rayPos, vec4(0.0,1.0,0.0,0.0) );
-    //float popo = repeatedSpheres( rayPos );
+    float popo = repeatedSpheres( rayPos );
     //float pipi = sdPlane( rayPos, vec4(0.0,1.0,0.0,0.0));
      //return mb2d( popo + pipi );
-
-  return drawDEAR( rayPos );
+	return popo;
+  //return drawDEAR( rayPos );
 }
 
 float doLight(vec3 vd, vec3 p, vec3 n, vec3 lightPos) {

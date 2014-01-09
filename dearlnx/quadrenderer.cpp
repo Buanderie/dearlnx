@@ -41,7 +41,7 @@ void QuadRenderer::destroy()
 
 void QuadRenderer::draw()
 {
-	glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
