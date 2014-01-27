@@ -35,10 +35,13 @@ target_link_libraries(dearlnx ${SOIL_LIBRARIES} )
 target_link_libraries(dearlnx ${OpenCV_LIBRARIES} )
 target_link_libraries(dearlnx rt )
 
+
 if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
 	target_link_libraries(dearlnx /opt/libjpeg-turbo/lib64/libturbojpeg.so )
+	target_link_libraries(dearlnx fmodex64 )
 elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
 	target_link_libraries(dearlnx /opt/libjpeg-turbo/lib32/libturbojpeg.so )
+	target_link_libraries(dearlnx fmodex )
 endif()
 
 # Copy resources to build directory

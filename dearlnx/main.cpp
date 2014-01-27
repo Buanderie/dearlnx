@@ -20,6 +20,7 @@
 #include "shader.hpp"
 #include "camera.hpp"
 #include "spline.hpp"
+#include "democlock.hpp"
 
 // LOL
 #include <GLFW/glfw3.h>
@@ -97,7 +98,7 @@ int main( int argc, char** argv )
 	cam = new Camera();
 	
 	spline = new Spline();
-	spline->load( "spline.txt" );
+	//spline->load( "spline.txt" );
 	
 	GLFWwindow* window;	
 
@@ -168,12 +169,12 @@ int main( int argc, char** argv )
 		double then = glfwGetTime();	
 		frameTime = then;
 		
-		//cam->setPosition( glm::vec3( 50.0 * cos( then ), 10.0 + 100.0 * cos(then), 50.0 * -sin( then ) ) );	
+		cam->setPosition( glm::vec3( 50.0 * cos( then ), 10.0 + 100.0 * cos(then), 50.0 * -sin( then ) ) );	
 		
 		//
 		cout << "frameTime=" << frameTime << endl;
-		glm::vec3 popopo = spline->getPointFromSync( frameTime );
-		cam->setPosition( popopo );
+		//glm::vec3 popopo = spline->getPointFromSync( frameTime );
+		//cam->setPosition( popopo );
 		//
 			 
 		glm::vec3 pos = cam->getPosition();

@@ -26,14 +26,14 @@ void TextureGlitcher::glitch( Texture2D& tex )
 		cvThreshold( _threshBuffer, _threshBuffer, 25, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU );
 		QuadTree q( cvRect( 0, 0, _width, _height ) );
 		q.subdivide( 4 );
-		q.pruneTree( _threshBuffer, 0.10 );
-		//q.mergeTree( threshImg, 0.05 );
+		q.pruneTree( _threshBuffer, 0.05 );
+		//q.mergeTree( _threshBuffer, 0.05 );
 		int count = 1;
 		while( count != 0 )
 		{
 			count = q.refit();
 		}
-		//q.printShit( polImg );
+		//q.printShit( _ramBuffer );
 		std::vector< CvRect > regions = q.retrieveRegions( _threshBuffer );
 		cout << "popo:" << regions.size() << endl;
 		for( int k = 0; k < regions.size(); ++k )
